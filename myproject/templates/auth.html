@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JWT Auth – MyApp</title>
+  <link rel="stylesheet" href="/static/auth.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- Signup Form -->
+    <div id="signup-box" class="box">
+      <h2>🚀 Create Account</h2>
+      <form id="signup-form">
+        <input type="text" placeholder="Username" id="su-username" required />
+        <input type="email" placeholder="Email" id="su-email" required />
+        <input type="password" placeholder="Password" id="su-pass" required />
+        <input type="password" placeholder="Confirm Password" id="su-pass2" required />
+        <button type="submit">Sign Up</button>
+      </form>
+      <p>Already have an account? <a href="#" id="show-login">Log in</a></p>
+    </div>
+
+    <!-- Login Form -->
+    <div id="login-box" class="box" style="display:none">
+      <h2>🔐 Welcome Back</h2>
+      <form id="login-form">
+        <input type="text" placeholder="Username" id="li-username" required />
+        <input type="password" placeholder="Password" id="li-pass" required />
+        <button type="submit">Log In</button>
+      </form>
+      <p>No account? <a href="#" id="show-signup">Sign up</a></p>
+    </div>
+
+    <!-- Success Panel -->
+    <div id="success-box" class="box" style="display:none">
+      <h2>✅ Hello <span id="greeting-user"></span>!</h2>
+      <p>Access token saved. You’re logged in.</p>
+      <button id="call-secret">Call Protected API</button>
+      <pre id="api-response"></pre>
+      <button id="logout">Logout</button>
+    </div>
+  </div>
+
+  <script src="/static/auth.js"></script>
+</body>
+</html>
