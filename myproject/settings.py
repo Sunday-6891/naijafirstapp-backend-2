@@ -1,5 +1,5 @@
 """
-Django settings for myproject - PRODUCTION READY FOR RAILWAY
+Django settings for myproject - FINAL PRODUCTION READY (Railway + Local Dev)
 """
 
 from pathlib import Path
@@ -10,19 +10,20 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ──────────────────────────────────────────────────────────────
-# SECURITY - RAILWAY PRODUCTION SETTINGS
+# SECURITY
 # ──────────────────────────────────────────────────────────────
-SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key-for-local-testing')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-dev-key-change-me')
 
-DEBUG = False  # ← MUST BE False on Railway
+# Local dev = True, Railway = False
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['*']  # ← Railway uses dynamic domains
+ALLOWED_HOSTS = ['*']
 
 # ──────────────────────────────────────────────────────────────
 # INSTALLED APPS
 # ──────────────────────────────────────────────────────────────
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'django.contrib.admin',          # ← keep this to avoid admin error
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -42,7 +43,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ← ADD THIS FOR STATIC FILES
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ← for static files in production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -52,15 +53,16 @@ MIDDLEWARE = [
 ]
 
 # ──────────────────────────────────────────────────────────────
-# CORS - Allow your React Native app
+# CORS
 # ──────────────────────────────────────────────────────────────
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8081",
     "http://localhost:19006",
+    "http://127.0.0.1:8000",
+    "http://10.0.2.2",
+    "http://10.209.102.130",
     "https://naijafirstapp-backend-2-production.up.railway.app",
 ]
-
-CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 
 # ──────────────────────────────────────────────────────────────
@@ -82,26 +84,37 @@ ROOT_URLCONF = 'myproject.urls'
 WSGI_APPLICATION = 'myproject.wsgi.application'
 
 # ──────────────────────────────────────────────────────────────
-# DATABASE - RAILWAY POSTGRESQL (auto-configured)
+# DATABASE - Auto switch: Local = SQLite, Railway = PostgreSQL
 # ──────────────────────────────────────────────────────────────
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('PGDATABASE'),
-        'USER': os.environ.get('PGUSER'),
-        'PASSWORD': os.environ.get('PGPASSWORD'),
-        'HOST': os.environ.get('PGHOST'),
-        'PORT': os.environ.get('PGPORT', '5432'),
-        'OPTIONS': {'sslmode': 'require'},
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    # Railway production
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('PGDATABASE'),
+            'USER': os.environ.get('PGUSER'),
+            'PASSWORD': os.environ.get('PGPASSWORD'),
+            'HOST': os.environ.get('PGHOST'),
+            'PORT': os.environ.get('PGPORT', '5432'),
+            'OPTIONS': {'sslmode': 'require'},
+        }
     }
-}
+else:
+    # Local development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # ──────────────────────────────────────────────────────────────
-# STATIC FILES - WHITENOISE FOR RAILWAY
+# STATIC FILES (WhiteNoise for production)
 # ──────────────────────────────────────────────────────────────
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # ──────────────────────────────────────────────────────────────
 # DEFAULT
@@ -111,4 +124,3 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
-
