@@ -45,3 +45,47 @@ logs/
 htmlcov/
 .coverage
 .coverage.*
+
+# Railway deployment
+.railway/
+
+# Python packaging/distribution
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Virtual environments (additional)
+venv*/
+env*/
+
+# Environment variables
+.env.local
+.env.production
+.env.development
+
+# Backup files
+*.bak
+*.backup
+
+# MacOS
+*.DS_Store?
+
+# Windows
+ehthumbs.db
+[Tt]humbs.db
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Pytest
+.pytest_cache/
+.cache
